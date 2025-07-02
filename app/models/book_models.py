@@ -9,6 +9,11 @@ class BookTextRequest(BaseModel):
     """Request model for text summarization"""
     book_text: str
 
+class BookSummary(BaseModel):
+    """Model for structured book summary"""
+    summary: str
+    discussion_questions: List[str]
+
 class BookAnalysisResponse(BaseModel):
     """Response model for book analysis"""
     success: bool
@@ -16,10 +21,7 @@ class BookAnalysisResponse(BaseModel):
     error: Optional[str] = None
     book_path: Optional[str] = None
 
-class BookSummary(BaseModel):
-    """Model for structured book summary"""
-    summary: str
-    discussion_questions: List[str]
+
 
 class HealthResponse(BaseModel):
     """Health check response model"""

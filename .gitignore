@@ -5,3 +5,4 @@ venv/
 #local testing
 openAITest.py
 the_little_prince.pdf
+__pycache__/

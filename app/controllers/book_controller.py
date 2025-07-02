@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from ..models import (
     BookAnalysisRequest, 
-    BookTextRequest, 
     BookAnalysisResponse,
     HealthResponse
 )
@@ -33,7 +32,11 @@ async def analyze_book(
     - **pdf_path**: Path to the PDF file relative to project root
     """
     try:
-        result = await book_service.analyze_book_from_path(request.pdf_path)
+        result_book_text = await book_service.analyze_book_from_path(request.pdf_path)
+        
+        if not result_book_text["success"]:
+            raise HTTPException(status_code=400, detail=result_book_text["error"])
+        result = await book_service.get_book_summary(result_book_text["data"])
         
         if not result["success"]:
             raise HTTPException(status_code=400, detail=result["error"])
@@ -41,23 +44,4 @@ async def analyze_book(
         return BookAnalysisResponse(**result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-
-@router.post("/summarize-text", response_model=BookAnalysisResponse)
-async def summarize_book_text(
-    request: BookTextRequest,
-    book_service: BookService = Depends(get_book_service)
-):
-    """
-    Generate summary for provided book text
-    
-    - **book_text**: The text content of the book to summarize
-    """
-    try:
-        result = await book_service.get_book_summary(request.book_text)
         
-        if not result["success"]:
-            raise HTTPException(status_code=400, detail=result["error"])
-            
-        return BookAnalysisResponse(**result)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}") 

@@ -81,7 +81,6 @@ The API will be available at `http://localhost:8000`
 
 ### Book Analysis
 - `POST /api/v1/analyze-book` - Analyze a book from PDF file
-- `POST /api/v1/summarize-text` - Summarize provided book text
 
 ### Documentation
 - `GET /docs` - Interactive API documentation (Swagger UI)
@@ -95,14 +94,6 @@ The API will be available at `http://localhost:8000`
 curl -X POST "http://localhost:8000/api/v1/analyze-book" \
      -H "Content-Type: application/json" \
      -d '{"pdf_path": "path/to/your/book.pdf"}'
-```
-
-### Summarize Book Text
-
-```bash
-curl -X POST "http://localhost:8000/api/v1/summarize-text" \
-     -H "Content-Type: application/json" \
-     -d '{"book_text": "Your book text content here..."}'
 ```
 
 ## FastAPI Best Practices Implemented
