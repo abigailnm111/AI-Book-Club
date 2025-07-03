@@ -1,78 +1,77 @@
-# AI Book Club API
+# AI Book Club
 
-A FastAPI application for analyzing books and generating discussion questions for book clubs using AI.
+A full-stack application for analyzing books and generating discussion questions for book clubs using AI.
 
-## Architecture Overview
-
-This project follows a **layered architecture** pattern with clear separation of concerns:
+## Project Structure
 
 ```
 AI-Book-Club/
-├── app/
-│   ├── controllers/     # HTTP request handlers (FastAPI routes)
-│   ├── services/        # Business logic layer
-│   ├── models/          # Pydantic data models
-│   └── utils/           # Utility functions and AI components
-├── main.py              # FastAPI application entry point
-├── requirements.txt     # Python dependencies
-└── README.md           # This file
+├── backend/                 # FastAPI backend
+│   ├── app/                # FastAPI application
+│   │   ├── controllers/    # HTTP request handlers
+│   │   ├── services/       # Business logic layer
+│   │   ├── models/         # Pydantic data models
+│   │   └── utils/          # Utility functions
+│   ├── main.py             # FastAPI entry point
+│   └── requirements.txt    # Python dependencies
+├── frontend/               # React frontend
+│   ├── src/               # React source code
+│   ├── public/            # Static assets
+│   └── package.json       # Node.js dependencies
+└── README.md              # This file
 ```
 
-### Layer Responsibilities
+## Quick Start
 
-1. **Controllers** (`app/controllers/`)
-   - Handle HTTP requests and responses
-   - Input validation using Pydantic models
-   - Error handling and status codes
-   - Dependency injection for services
+### Backend (FastAPI)
 
-2. **Services** (`app/services/`)
-   - Business logic implementation
-   - Data processing and transformation
-   - Integration with external services (AI, databases, etc.)
-   - Error handling and logging
-
-3. **Models** (`app/models/`)
-   - Pydantic models for request/response validation
-   - Data structure definitions
-   - API documentation generation
-
-4. **Utils** (`app/utils/`)
-   - Reusable utility functions
-   - External service integrations (OpenAI, PDF processing)
-   - Helper functions
-
-## Setup and Installation
-
-1. **Clone the repository**
+1. **Navigate to backend directory:**
    ```bash
-   git clone <repository-url>
-   cd AI-Book-Club
+   cd backend
    ```
 
-2. **Create virtual environment**
+2. **Create virtual environment:**
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install dependencies**
+3. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Set up environment variables**
-   Create a `.env` file in the root directory:
+4. **Set up environment variables:**
+   Create a `.env` file in the backend directory:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
    ```
 
-5. **Run the application**
+5. **Run the backend:**
    ```bash
    python main.py
    ```
 
-The API will be available at `http://localhost:8000`
+   The API will be available at `http://localhost:8000`
+
+### Frontend (React)
+
+1. **Navigate to frontend directory:**
+   ```bash
+   cd frontend
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Run the frontend:**
+   ```bash
+   npm start
+   ```
+
+   The React app will be available at `http://localhost:3000`
 
 ## API Endpoints
 
@@ -86,63 +85,39 @@ The API will be available at `http://localhost:8000`
 - `GET /docs` - Interactive API documentation (Swagger UI)
 - `GET /redoc` - Alternative API documentation
 
-## Usage Examples
+## Development
 
-### Analyze a Book from PDF
+### Backend Development
+- **Architecture**: Layered architecture with controllers, services, and models
+- **Framework**: FastAPI with Pydantic for validation
+- **Documentation**: Automatic OpenAPI/Swagger documentation
 
-```bash
-curl -X POST "http://localhost:8000/api/v1/analyze-book" \
-     -H "Content-Type: application/json" \
-     -d '{"pdf_path": "path/to/your/book.pdf"}'
-```
+### Frontend Development
+- **Framework**: React with TypeScript
+- **Build Tool**: Create React App
+- **Development Server**: Runs on port 3000
 
-## FastAPI Best Practices Implemented
-
-1. **Dependency Injection**: Services are injected into controllers using FastAPI's `Depends()`
-2. **Request/Response Models**: Pydantic models for type safety and validation
-3. **Error Handling**: Proper HTTP status codes and error messages
-4. **API Documentation**: Automatic OpenAPI/Swagger documentation
-5. **Router Organization**: Modular routing with prefixes and tags
-6. **CORS Support**: Cross-origin resource sharing middleware
-7. **Async/Await**: Proper async handling for better performance
-
-## Development Guidelines
-
-### Adding New Endpoints
-
-1. **Create/update models** in `app/models/`
-2. **Add business logic** in `app/services/`
-3. **Create controller** in `app/controllers/`
-4. **Register router** in `main.py`
-
-### Code Organization
-
-- Keep controllers thin - they should only handle HTTP concerns
-- Put business logic in services
-- Use dependency injection for testability
-- Validate all inputs with Pydantic models
-- Handle errors gracefully with proper HTTP status codes
-
-## Testing
-
-To run tests (when implemented):
-```bash
-pytest
-```
+### Communication
+- **CORS**: Configured for development (allows localhost:3000)
+- **API Base URL**: `http://localhost:8000` (configured in frontend)
 
 ## Deployment
 
-For production deployment:
+### Backend Deployment
 1. Use a production ASGI server like Gunicorn with Uvicorn workers
-2. Configure proper CORS settings
+2. Configure proper CORS settings for production
 3. Set up environment variables securely
 4. Use a reverse proxy like Nginx
-5. Implement proper logging and monitoring
+
+### Frontend Deployment
+1. Build the React app: `npm run build`
+2. Serve the `build/` directory with a web server
+3. Configure API base URL for production
 
 ## Contributing
 
 1. Follow the established architecture patterns
-2. Add proper type hints and docstrings
-3. Update API documentation
-4. Write tests for new functionality
-5. Follow PEP 8 style guidelines
+2. Add proper type hints and docstrings (backend)
+3. Use TypeScript for frontend components
+4. Update API documentation
+5. Write tests for new functionality
