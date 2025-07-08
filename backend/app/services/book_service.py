@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional
 import os
+import json
 import pymupdf
 from ..utils.ai_component import get_summary
 
@@ -24,7 +25,7 @@ class BookService:
             book_text = self._get_book_text_from_path(pdf_path)
             
             # Generate summary using AI
-            ai_response = get_summary(book_text)
+            ai_response = json.loads(get_summary(book_text))
             
             return {
                 "success": True,
@@ -36,28 +37,6 @@ class BookService:
                 "success": False,
                 "error": str(e),
                 "book_path": pdf_path
-            }
-    
-    async def get_book_summary(self, book_text: str) -> Dict[str, Any]:
-        """
-        Generate summary for provided book text
-        
-        Args:
-            book_text: The text content of the book
-            
-        Returns:
-            Dictionary containing summary and discussion questions
-        """
-        try:
-            ai_response = get_summary(book_text)
-            return {
-                "success": True,
-                "data": ai_response
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
             }
     
     def _get_book_text_from_path(self, pdf_path: str) -> str:

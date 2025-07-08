@@ -17,7 +17,7 @@ class BookSummary(BaseModel):
 class BookAnalysisResponse(BaseModel):
     """Response model for book analysis"""
     success: bool
-    data: Optional[str] = None
+    data: Optional[BookSummary] = None
     error: Optional[str] = None
     book_path: Optional[str] = None
 

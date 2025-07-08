@@ -3,7 +3,10 @@ import './App.css';
 
 interface BookAnalysisResponse {
   success: boolean;
-  data?: string;
+  data?: {
+    summary: string;
+    discussion_questions: string[];
+  };
   error?: string;
   book_path?: string;
 }
@@ -101,26 +104,7 @@ function App() {
           </div>
         </div>
 
-        <div className="analysis-section">
-          <h2>Summarize Text</h2>
-          <div className="input-group">
-            <label htmlFor="bookText">Book Text:</label>
-            <textarea
-              id="bookText"
-              value={bookText}
-              onChange={(e) => setBookText(e.target.value)}
-              placeholder="Paste your book text here..."
-              rows={5}
-            />
-            <button 
-              onClick={summarizeText} 
-              disabled={loading}
-              className="analyze-btn"
-            >
-              {loading ? 'Summarizing...' : 'Summarize Text'}
-            </button>
-          </div>
-        </div>
+
 
         {analysis && (
           <div className="results-section">
@@ -128,7 +112,18 @@ function App() {
             {analysis.success ? (
               <div className="success-result">
                 <h3>Analysis Complete!</h3>
-                <pre>{analysis.data}</pre>
+                {analysis.data && (
+                  <div>
+                    <h4>Summary</h4>
+                    <p>{analysis.data.summary}</p>
+                    <h4>Discussion Questions</h4>
+                    <ul>
+                      {analysis.data.discussion_questions.map((q, i) => (
+                        <li key={i}>{q}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 {analysis.book_path && (
                   <p><strong>Book:</strong> {analysis.book_path}</p>
                 )}
