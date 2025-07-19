@@ -13,7 +13,6 @@ interface BookAnalysisResponse {
 
 function App() {
   const [pdfPath, setPdfPath] = useState('');
-  const [bookText, setBookText] = useState('');
   const [analysis, setAnalysis] = useState<BookAnalysisResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -46,40 +45,84 @@ function App() {
     }
   };
 
-  const summarizeText = async () => {
-    if (!bookText.trim()) {
-      alert('Please enter some text to summarize');
-      return;
-    }
+  const renderAnalysisResult = () => {
+    if (!analysis) return null;
 
-    setLoading(true);
-    try {
-      const response = await fetch('http://localhost:8000/api/v1/summarize-text', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ book_text: bookText }),
-      });
-
-      const result: BookAnalysisResponse = await response.json();
-      setAnalysis(result);
-    } catch (error) {
-      console.error('Error summarizing text:', error);
-      setAnalysis({
-        success: false,
-        error: 'Failed to summarize text. Please check your connection and try again.'
-      });
-    } finally {
-      setLoading(false);
+    if (analysis.success && analysis.data) {
+      return (
+        <div className="success-result">
+          <h3>Analysis Complete</h3>
+          {analysis.book_path && (
+            <p className="book-path">
+              <strong>Book:</strong> {analysis.book_path}
+            </p>
+          )}
+          
+          <div className="analysis-content">
+            <div className="summary-section">
+              <h4>Summary</h4>
+              <p>{analysis.data.summary}</p>
+            </div>
+            
+            <div className="questions-section">
+              <h4>Discussion Questions</h4>
+              <ol>
+                {analysis.data.discussion_questions.map((question, index) => (
+                  <li key={index}>{question}</li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="error-result">
+          <h3>Error</h3>
+          <p>{analysis.error}</p>
+        </div>
+      );
     }
+  };
+
+  // Function to create symmetrical rainbow text effect with proportional scaling
+  const createRainbowText = (text: string) => {
+    const letters = text.split('');
+    const totalLetters = letters.length;
+    
+    return letters.map((letter, index) => {
+      // Calculate proportional distance from center (0 = center, 1 = edge)
+      const center = (totalLetters) / 2;
+      const distanceFromCenter = Math.abs(index - center);
+      const maxDistance = center;
+                  
+      // Both yOffset and rotation scale proportionally with distance from center
+      const yOffset = distanceFromCenter * 5; // Vertical curve
+      const rotationAngle = ((index - center) / maxDistance) * 18; // Rotation
+      
+      return (
+        <span
+          key={index}
+          style={{
+            transform: `translateY(${yOffset}px) rotate(${rotationAngle}deg)`,
+            display: 'inline-block',
+            margin: '0 1px',
+            transformOrigin: 'center bottom'
+          }}
+        >
+          {letter}
+        </span>
+      );
+    });
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>AI Book Club</h1>
-        <p>Analyze books and generate discussion questions using AI</p>
+        <h1>
+          {createRainbowText('AI Book Club')}
+        </h1>
+        <p>Discover the magic of books through AI-powered analysis and discussion</p>
       </header>
 
       <main className="App-main">
@@ -104,36 +147,10 @@ function App() {
           </div>
         </div>
 
-
-
         {analysis && (
           <div className="results-section">
             <h2>Results</h2>
-            {analysis.success ? (
-              <div className="success-result">
-                <h3>Analysis Complete!</h3>
-                {analysis.data && (
-                  <div>
-                    <h4>Summary</h4>
-                    <p>{analysis.data.summary}</p>
-                    <h4>Discussion Questions</h4>
-                    <ul>
-                      {analysis.data.discussion_questions.map((q, i) => (
-                        <li key={i}>{q}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {analysis.book_path && (
-                  <p><strong>Book:</strong> {analysis.book_path}</p>
-                )}
-              </div>
-            ) : (
-              <div className="error-result">
-                <h3>Error</h3>
-                <p>{analysis.error}</p>
-              </div>
-            )}
+            {renderAnalysisResult()}
           </div>
         )}
       </main>
